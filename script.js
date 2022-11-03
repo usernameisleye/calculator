@@ -1,3 +1,5 @@
+alert("Welcome to my Calculator web app, still under construction so don't judge!")
+
 class Calculator{
     constructor(upperDisplayText, lowerDisplayText){
         this.upperDisplayText = upperDisplayText;
@@ -12,7 +14,12 @@ class Calculator{
         this.operation = undefined;
     }
 
-    delete(){}
+    delete(){
+        this.lowerDisplay = this.lowerDisplay.toString().slice(0, -1)
+        // if(this.lowerDisplay === ''){
+        //     this.lowerDisplay = '0'
+        // }
+    }
 
     //first of is checking if an '.' is in the lower display and setting a condition that only one can display, and secondly is appending new input value to the display
     appendNumber(number){
@@ -32,13 +39,39 @@ class Calculator{
     }
 
     compute(){
-
+        let compute
+        const upper = Number(this.upperDisplay)
+        const lower = Number(this.lowerDisplay)
+        if(isNaN(upper) || isNaN(lower)){return}
+        switch(this.operation){
+            case '+':
+                compute =  upper + lower
+                break
+            case '*':
+                compute = upper * lower
+                break
+            case '÷':
+                compute = upper / lower
+                break
+            case '-':
+                compute = upper - lower
+            default:
+                return
+        }
+        this.upperDisplay = ''
+        this.lowerDisplay = compute;
+        this.operation = undefined 
     }
 
     //updating the constructor values to the objects
+    //working on why operation is still showing
     updateDisplay(){
         this.lowerDisplayText.innerHTML= this.lowerDisplay
-        this.upperDisplayText.innerHTML = this.upperDisplay
+        if(this.operation != null){
+            this.upperDisplayText.innerHTML = `${this.upperDisplay} ${this.operation}`
+        }else{
+            this.upperDisplayText.innerHTML = ''
+        }
     }
 }
 
@@ -54,7 +87,7 @@ const lowerDisplay = document.getElementById('lowerDisplay');
 //calculator object taking blueprint for Calculator class
 const calculator = new Calculator(upperDisplay, lowerDisplay)
 
-//looping through numberButtons and appending the 'clicked' number to it, then updating display
+//looping through numberButtons and appending(appendNumber method) the 'clicked' number to it, then updating display
 numberButtons.forEach(button =>{
     button.addEventListener('click', () =>{
         calculator.appendNumber(button.innerHTML)
@@ -62,7 +95,7 @@ numberButtons.forEach(button =>{
     })
 })
 
-//
+//looping through operationButtons then running the chooseOperation method, then updating display
 operationButtons.forEach(button =>{
     button.addEventListener('click', () =>{
         calculator.chooseOperation(button.innerHTML)
@@ -70,7 +103,20 @@ operationButtons.forEach(button =>{
     })
 })
 
+//click runs compute function(Calculator method) then updates display
 equalsBtn.addEventListener('click', button =>{
     calculator.compute()
+    calculator.updateDisplay()
+})
+
+//click runs clear function(Calculator method) then updates display
+allClearBtn.addEventListener('click', button =>{
+    calculator.clear()
+    calculator.updateDisplay()
+})
+
+//click runs delete function(Calculator method) then updates display
+deleteBtn.addEventListener('click', button =>{
+    calculator.delete()
     calculator.updateDisplay()
 })
